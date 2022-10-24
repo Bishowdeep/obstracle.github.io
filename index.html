@@ -120,6 +120,10 @@
                 <td class="u-border-1 u-border-grey-dark-1 u-table-cell">Jumper cables</td>
                 <td class="u-border-1 u-border-grey-dark-1 u-table-cell">As needed</td>
               </tr>
+              <tr style="height: 131px;">
+                <td class="u-border-1 u-border-grey-dark-1 u-table-cell">3.7V battry</td>
+                <td class="u-border-1 u-border-grey-dark-1 u-table-cell"> 4 </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -136,22 +140,158 @@
           <div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
             <div class="u-clearfix u-custom-html u-custom-html-1"></div>
             <p class="u-custom-font u-font-oswald u-text u-text-default u-text-2">
-              <span class="u-text-black">int duration=0; <br>long distance=0; <br>int firstduration=0; <br>long firstdistance=0; <br>int secondduration=0; <br>long seconddistance=0; <br>
-                <br>#include &lt;Servo.h&gt; <br>Servo myservo; <br>
-                <br>int pos = 0; <br>
-                <br>void setup() { <br>pinMode(5,OUTPUT); <br>pinMode(6,INPUT); <br>pinMode(7, OUTPUT); <br>pinMode(8, OUTPUT); <br>pinMode(9, OUTPUT); <br>pinMode(10, OUTPUT); <br> myservo.attach(3); <br>Serial.begin(9600); <br>} <br>void loop() <br> { <br> digitalWrite(5, HIGH); <br> delayMicroseconds(10); <br> digitalWrite(5, LOW); <br> delayMicroseconds(2); <br> duration= pulseIn(6,HIGH); <br> delay(100); <br> distance=duration*0.034/2; <br> Serial.println(distance); <br> if(distance&lt;=20) <br> { <br> digitalWrite(7, LOW); <br> digitalWrite(8, LOW); <br> digitalWrite(9, LOW); <br> digitalWrite(10, LOW); <br> delay(300); <br>
-                <br> digitalWrite(7, LOW); <br> digitalWrite(8, HIGH); <br> digitalWrite(9, LOW); <br> digitalWrite(10, HIGH); <br>
-                <br> delay(350); <br> digitalWrite(7, LOW); <br> digitalWrite(8, LOW); <br> digitalWrite(9, LOW); <br> digitalWrite(10, LOW); <br>
-                <br> myservo.write(0); <br> delay(500); <br> digitalWrite(5, HIGH); <br> delayMicroseconds(10); <br> digitalWrite(5, LOW); <br> delayMicroseconds(2); <br> firstduration= pulseIn(6,HIGH); <br> delay(100); <br> firstdistance=firstduration*0.034/2; <br> int first = firstdistance; <br> Serial.println(firstdistance); <br>
-                <br> myservo.write(90); <br> delay(500); <br>
-                <br> myservo.write(180); <br> delay(500); <br> digitalWrite(5, HIGH); <br> delayMicroseconds(10); <br> digitalWrite(5, LOW); <br> delayMicroseconds(2); <br> secondduration= pulseIn(6,HIGH); <br> delay(100); <br> seconddistance=secondduration*0.034/2; <br> int second = seconddistance; <br>
-                <br> Serial.println(seconddistance); <br>
-                <br> myservo.write(90); <br> delay(500); <br>
-                <br>if(first &lt; second ) { digitalWrite(7, LOW); digitalWrite(8, HIGH); digitalWrite(9, HIGH); digitalWrite(10, LOW); delay(500); } else if(first &gt;   second  ) <br>
-                <br>
-                <br>{ <br>
-                <br> digitalWrite(7, HIGH); <br> digitalWrite(8, LOW); <br> digitalWrite(9, LOW); <br> digitalWrite(10, HIGH); <br> delay(500); <br> } <br>} <br>else <br>{ <br> digitalWrite(7, HIGH); <br> digitalWrite(8, LOW); <br> digitalWrite(9, HIGH); <br> digitalWrite(10, LOW); <br> } <br>
-                <br>} 
+              <span class="u-text-black">
+              <br>#include <Servo.h>        // Include Servo Library
+                <br>#include <NewPing.h>      // Include Newping Library
+                  
+                <br>  // L293D Control Pins attach on pin no 7,8,9,10 of arduino
+                 <br> const int LeftMotorForward = 7;
+                 <br> const int LeftMotorBackward = 8;
+                 <br> const int RightMotorForward = 9;
+                 <br> const int RightMotorBackward = 10;
+                  
+                <br>  #define TRIGGER_PIN  5  // Arduino pin 5 tied to trigger pin on the ultrasonic sensor.
+                 <br> #define ECHO_PIN     6  // Arduino pin 6 tied to echo pin on the ultrasonic sensor.
+                 <br> #define MAX_DISTANCE 250 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 250cm.
+                 <br>  
+                 <br>  Servo servo_motor;  // Servo's name
+                 <br>  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+                  
+                 <br>  boolean goesForward = false; //For not doing anything at start.
+                 <br>  int distance = 100;
+                  
+                 <br>  void setup()
+                 <br>  {
+                  <br>    // Set L293D Control Pins as Output
+                  <br>   pinMode(RightMotorForward, OUTPUT);
+                  <br>   pinMode(LeftMotorForward, OUTPUT);
+                  <br> pinMode(LeftMotorBackward, OUTPUT);
+                  <br>  pinMode(RightMotorBackward, OUTPUT);
+                    
+                  <br>  servo_motor.attach(3);   // Attachs the servo signal pin on pin 3 of arduino.
+                  <br>   servo_motor.write(90);   // Set at 90 degrees as initial position. 
+                  <br>   delay(2000);              // Wait for 2s.
+                  <br>   distance = readPing();    // Get Ping Distance from ultrasonic sensor.
+                  <br>   delay(100);               // Wait for 100ms.
+                  <br>   distance = readPing();    //Read ping or distance value is stored in "distance".
+                  <br>  delay(100);
+                  <br>  distance = readPing();
+                  <br>  delay(100);
+                  <br>  distance = readPing();
+                  <br>   delay(100);
+                  <br>   }
+                  <br>  
+                  <br>  void loop() //loop all the codes
+                  <br> {  
+                    <br>    int distanceRight = 0; //initaial right distance.
+                    <br>   int distanceLeft = 0; //initial left distance.
+                    <br>  delay(50); //delay 50ms.
+                  
+                    <br>  if (distance <= 40) //stop if distance is less then or equal to 40cm.
+                    <br>   {
+                      <br>   moveStop();
+                      <br>   delay(300);
+                      <br>   moveBackward();
+                      <br>  delay(400);
+                      <br>  moveStop();
+                      <br>  delay(300);
+                      <br>  distanceRight = lookRight();
+                      <br>  delay(300);
+                      <br>   distanceLeft = lookLeft();
+                      <br>  delay(300);
+                  
+                      <br> if (distanceRight >= distanceLeft) //if distance right is more then or equal to distance left.
+                      <br>  {
+                        <br>    turnRight(); //turn right function.
+                        <br>   delay(800); //wheels will turn right for 800ms.
+                        <br>   moveStop(); //stop after 800ms
+                        <br> }
+                        <br>  else
+                        <br>  {
+                          <br>   turnLeft();   //turn left function.
+                          <br>   delay(1500); //wheels will turn left for 800ms
+                          <br>   moveStop(); //stop after 800ms
+                          <br>  }
+                    
+                          <br>  }
+                          <br>  else
+                          <br> {
+                            <br>   moveForward();  //if distance is less then 40cm stop if not continue to move.
+                            <br>  }
+                  
+                            <br>  distance = readPing(); //distance function.
+                            <br>  }
+                  
+                            <br> int lookRight()     // Look Right Function for Servo Motor.
+                            <br>  {  
+                              <br>    servo_motor.write(15); //turn servo motor at 15 degrees right.
+                              <br>    delay(500);           //will turn servo at 15 degrees and wait for 500ms.
+                              <br>   int distance = readPing(); //after turning right read and store in read ping function.
+                              <br>   delay(100);               //wait 100ms for accurate measurements.
+                              <br>  servo_motor.write(90);  //return at initial state of servo which is 0 degrees.
+                              <br>  return distance;
+                              <br>  }
+                  
+                              <br>  int lookLeft()              // Look Left Function for Servo Motor 
+                              <br>  {
+                                <br>   servo_motor.write(180); //turn servo motor at 180 degrees right.
+                    <br>    delay(500);            //will turn servo at 180 degrees and wait for 500ms.
+                    <br>   int distance = readPing();    //after turning right left and store in read ping function.
+                    <br>   delay(100);                  //wait 100ms for accurate measurements.
+                    <br>   servo_motor.write(90);      //return at initial state of servo which is 0 degrees.
+                    <br>   return distance;
+                    <br>   }
+                  
+                    <br>  int readPing()      // Read Ping Function for Ultrasonic Sensor.
+                    <br>  {
+                      <br>     delay(100);                 // Wait 100ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+                      <br>    int cm = sonar.ping_cm();   //Send ping, get ping distance in centimeters (cm).
+                      <br>    if (cm==0)                  //if cm is equal to zero cm is 250 function
+                      <br>    {
+                        <br>      cm=250;
+                        <br>    }
+                    <br>   return cm;
+                    <br>   }
+                  
+                    <br>  void moveStop()       // Move Stop Function for Motor Driver.
+                    <br>  {
+                      <br>    digitalWrite(RightMotorForward, LOW);
+                      <br>    digitalWrite(RightMotorBackward, LOW);
+                      <br>    digitalWrite(LeftMotorForward, LOW);
+                      <br>    digitalWrite(LeftMotorBackward, LOW);
+                      <br>  }
+                      <br>   
+                      <br>  void moveForward()    // Move Forward Function for Motor Driver.
+                      <br>   {
+                        <br>       digitalWrite(RightMotorForward, HIGH);
+                      <br>       digitalWrite(RightMotorBackward, LOW);
+                      <br>      digitalWrite(LeftMotorForward, HIGH);
+                      <br>       digitalWrite(LeftMotorBackward, LOW);
+                      <br>  }
+                  
+                      <br>  void moveBackward()   // Move Backward Function for Motor Driver.
+                      <br>  {
+                        <br>    digitalWrite(RightMotorForward, LOW);
+                        <br>    digitalWrite(RightMotorBackward, HIGH);
+                        <br>  digitalWrite(LeftMotorForward, LOW);
+                        <br>  digitalWrite(LeftMotorBackward, HIGH);
+                        <br>  }
+                  
+                        <br>  void turnRight()      // Turn Right Function for Motor Driver.
+                        <br>{
+                          <br>  digitalWrite(RightMotorForward, LOW);
+                          <br>   digitalWrite(RightMotorBackward, HIGH);
+                          <br>   digitalWrite(LeftMotorForward, HIGH);
+                          <br>    digitalWrite(LeftMotorBackward, LOW);
+                    <br> }
+                    <br>
+                    <br>  void turnLeft()       // Turn Left Function for Motor Driver.
+                    <br>   {
+                    <br>     digitalWrite(RightMotorForward, HIGH);
+                    <br>   digitalWrite(RightMotorBackward, LOW);
+                    <br>   digitalWrite(LeftMotorForward, LOW);
+                    <br>    digitalWrite(LeftMotorBackward, HIGH);
+                    <br>  }
               </span>
               <br>
               <br>
