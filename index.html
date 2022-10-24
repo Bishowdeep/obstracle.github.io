@@ -141,10 +141,10 @@
             <div class="u-clearfix u-custom-html u-custom-html-1"></div>
             <p class="u-custom-font u-font-oswald u-text u-text-default u-text-2">
               <span class="u-text-black">
-                <br>#include &lt;Servo.h&gt;        // Include Servo Library
-                <br>#include &lt;NewPing.h&gt;      // Include Newping Library
+                <br>#include &lt;Servo.h&gt;        // Include Servo Library.
+                <br>#include &lt;NewPing.h&gt;      // Include Newping Library.
 
-                <br>  // L293D Control Pins attach on pin no 7,8,9,10 of arduino
+                <br>  // L293D Control Pins attach on pin no 7,8,9,10 of arduino.
                  <br> const int LeftMotorForward = 7;
                  <br> const int LeftMotorBackward = 8;
                  <br> const int RightMotorForward = 9;
@@ -162,7 +162,7 @@
                   
                  <br>  void setup()
                  <br>  {
-                  <br>    // Set L293D Control Pins as Output
+                  <br>    // Set L293D Control Pins as Output.
                   <br>   pinMode(RightMotorForward, OUTPUT);
                   <br>   pinMode(LeftMotorForward, OUTPUT);
                   <br> pinMode(LeftMotorBackward, OUTPUT);
@@ -181,7 +181,7 @@
                   <br>   delay(100);
                   <br>   }
                   <br>  
-                  <br>  void loop() //loop all the codes
+                  <br>  void loop() //loop all the codes.
                   <br> {  
                     <br>    int distanceRight = 0; //initaial right distance.
                     <br>   int distanceLeft = 0; //initial left distance.
@@ -189,28 +189,28 @@
                   
                     <br>  if (distance <= 40) //stop if distance is less then or equal to 40cm.
                     <br>  {
-                      <br>   moveStop();         //if distance is less then or equal to 40cm start move stop function
-                      <br>   delay(300);        //wait for 300ms
-                      <br>   moveBackward();   //go backward
-                      <br>   delay(400);     //wait for 400ms
-                      <br>   moveStop();    //stop again
-                      <br>   delay(300);   //wait 300 ms
-                      <br>   distanceRight = lookRight();    //store value of look right function on distance
-                      <br>   delay(300);                    //delay for 300ms
-                      <br>   distanceLeft = lookLeft();    //store value of look right function on distance
-                      <br>   delay(300);                  //delay for 300ms
+                      <br>   moveStop();         //if distance is less then or equal to 40cm start move stop function.
+                      <br>   delay(300);        //wait for 300ms.
+                      <br>   moveBackward();   //go backward.
+                      <br>   delay(400);     //wait for 400ms.
+                      <br>   moveStop();    //stop again.
+                      <br>   delay(300);   //wait 300 ms.
+                      <br>   distanceRight = lookRight();    //store value of look right function on distance.
+                      <br>   delay(300);                    //delay for 300ms.
+                      <br>   distanceLeft = lookLeft();    //store value of look right function on distance.
+                      <br>   delay(300);                  //delay for 300ms.
                   
                       <br> if (distanceRight >= distanceLeft) //if distance right is more then or equal to distance left.
                       <br>  {
                         <br>    turnRight(); //turn right function.
                         <br>   delay(800); //wheels will turn right for 800ms.
-                        <br>   moveStop(); //stop after 800ms
+                        <br>   moveStop(); //stop after 800ms.
                         <br> }
                         <br>  else
                         <br>  {
                           <br>   turnLeft();   //turn left function.
-                          <br>   delay(1500); //wheels will turn left for 800ms
-                          <br>   moveStop(); //stop after 800ms
+                          <br>   delay(1500); //wheels will turn left for 800ms.
+                          <br>   moveStop(); //stop after 800ms.
                           <br>  }
                     
                           <br>  }
@@ -232,7 +232,7 @@
                               <br>  return distance;
                               <br>  }
                   
-                              <br>  int lookLeft()              // Look Left Function for Servo Motor 
+                              <br>  int lookLeft()              // Look Left Function for Servo Motor .
                               <br>  {
                                 <br>   servo_motor.write(180); //turn servo motor at 180 degrees right.
                     <br>    delay(500);            //will turn servo at 180 degrees and wait for 500ms.
@@ -246,7 +246,7 @@
                     <br>  {
                       <br>     delay(100);                 // Wait 100ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
                       <br>    int cm = sonar.ping_cm();   //Send ping, get ping distance in centimeters (cm).
-                      <br>    if (cm==0)                  //if cm is equal to zero cm is 250 function
+                      <br>    if (cm==0)                  //if cm is equal to zero cm is 250 function.
                       <br>    {
                         <br>      cm=250;
                         <br>    }
