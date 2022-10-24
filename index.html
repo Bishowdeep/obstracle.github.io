@@ -141,15 +141,15 @@
             <div class="u-clearfix u-custom-html u-custom-html-1"></div>
             <p class="u-custom-font u-font-oswald u-text u-text-default u-text-2">
               <span class="u-text-black">
-              <br>#include <Servo.h>        // Include Servo Library
+                <br>#include <Servo.h>        // Include Servo Library
                 <br>#include <NewPing.h>      // Include Newping Library
-                  
+
                 <br>  // L293D Control Pins attach on pin no 7,8,9,10 of arduino
                  <br> const int LeftMotorForward = 7;
                  <br> const int LeftMotorBackward = 8;
                  <br> const int RightMotorForward = 9;
                  <br> const int RightMotorBackward = 10;
-                  
+                 <br>
                 <br>  #define TRIGGER_PIN  5  // Arduino pin 5 tied to trigger pin on the ultrasonic sensor.
                  <br> #define ECHO_PIN     6  // Arduino pin 6 tied to echo pin on the ultrasonic sensor.
                  <br> #define MAX_DISTANCE 250 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 250cm.
@@ -188,17 +188,17 @@
                     <br>  delay(50); //delay 50ms.
                   
                     <br>  if (distance <= 40) //stop if distance is less then or equal to 40cm.
-                    <br>   {
-                      <br>   moveStop();
-                      <br>   delay(300);
-                      <br>   moveBackward();
-                      <br>  delay(400);
-                      <br>  moveStop();
-                      <br>  delay(300);
-                      <br>  distanceRight = lookRight();
-                      <br>  delay(300);
-                      <br>   distanceLeft = lookLeft();
-                      <br>  delay(300);
+                    <br>  {
+                      <br>   moveStop();         //if distance is less then or equal to 40cm start move stop function
+                      <br>   delay(300);        //wait for 300ms
+                      <br>   moveBackward();   //go backward
+                      <br>   delay(400);     //wait for 400ms
+                      <br>   moveStop();    //stop again
+                      <br>   delay(300);   //wait 300 ms
+                      <br>   distanceRight = lookRight();    //store value of look right function on distance
+                      <br>   delay(300);                    //delay for 300ms
+                      <br>   distanceLeft = lookLeft();    //store value of look right function on distance
+                      <br>   delay(300);                  //delay for 300ms
                   
                       <br> if (distanceRight >= distanceLeft) //if distance right is more then or equal to distance left.
                       <br>  {
