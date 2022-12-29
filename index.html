@@ -141,157 +141,222 @@
             <div class="u-clearfix u-custom-html u-custom-html-1"></div>
             <p class="u-custom-font u-font-oswald u-text u-text-default u-text-2">
               <span class="u-text-black">
-                <br>#include &lt;Servo.h&gt;        // Include Servo Library.
+
+               <br> //CODE MODIFICATION CREDITS
+               <br> //fb.com/shaambhavbhandari21
+               <br> //fb.com/Bishow420
+
+               <br>#include &lt;Servo.h&gt;        // Include Servo Library.
                 <br>#include &lt;NewPing.h&gt;      // Include Newping Library.
 
-                <br>  // L293D Control Pins attach on pin no 7,8,9,10 of arduino.
-                 <br> const int LeftMotorForward = 7;
-                 <br> const int LeftMotorBackward = 8;
-                 <br> const int RightMotorForward = 9;
-                 <br> const int RightMotorBackward = 10;
-                 <br>
-                <br>  #define TRIGGER_PIN  5  // Arduino pin 5 tied to trigger pin on the ultrasonic sensor.
-                 <br> #define ECHO_PIN     6  // Arduino pin 6 tied to echo pin on the ultrasonic sensor.
-                 <br> #define MAX_DISTANCE 250 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 250cm.
-                 <br>  
-                 <br>  Servo servo_motor;  // Servo's name
-                 <br>  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
-                  
-                 <br>  boolean goesForward = false; //For not doing anything at start.
-                 <br>  int distance = 100;
-                  
-                 <br>  void setup()
-                 <br>  {
-                  <br>    // Set L293D Control Pins as Output.
-                  <br>   pinMode(RightMotorForward, OUTPUT);
-                  <br>   pinMode(LeftMotorForward, OUTPUT);
-                  <br> pinMode(LeftMotorBackward, OUTPUT);
-                  <br>  pinMode(RightMotorBackward, OUTPUT);
-                    
-                  <br>  servo_motor.attach(3);   // Attachs the servo signal pin on pin 3 of arduino.
-                  <br>   servo_motor.write(90);   // Set at 90 degrees as initial position. 
-                  <br>   delay(2000);              // Wait for 2s.
-                  <br>   distance = readPing();    // Get Ping Distance from ultrasonic sensor.
-                  <br>   delay(100);               // Wait for 100ms.
-                  <br>   distance = readPing();    //Read ping or distance value is stored in "distance".
-                  <br>  delay(100);
-                  <br>  distance = readPing();
-                  <br>  delay(100);
-                  <br>  distance = readPing();
-                  <br>   delay(100);
-                  <br>   }
-                  <br>  
-                  <br>  void loop() //loop all the codes.
-                  <br> {  
-                    <br>    int distanceRight = 0; //initaial right distance.
-                    <br>   int distanceLeft = 0; //initial left distance.
-                    <br>  delay(50); //delay 50ms.
-                  
-                    <br>  if (distance <= 40) //stop if distance is less then or equal to 40cm.
-                    <br>  {
-                      <br>   moveStop();         //if distance is less then or equal to 40cm start move stop function.
-                      <br>   delay(300);        //wait for 300ms.
-                      <br>   moveBackward();   //go backward.
-                      <br>   delay(400);     //wait for 400ms.
-                      <br>   moveStop();    //stop again.
-                      <br>   delay(300);   //wait 300 ms.
-                      <br>   distanceRight = lookRight();    //store value of look right function on distance.
-                      <br>   delay(300);                    //delay for 300ms.
-                      <br>   distanceLeft = lookLeft();    //store value of look right function on distance.
-                      <br>   delay(300);                  //delay for 300ms.
-                  
-                      <br> if (distanceRight >= distanceLeft) //if distance right is more then or equal to distance left.
-                      <br>  {
-                        <br>    turnRight(); //turn right function.
-                        <br>   delay(800); //wheels will turn right for 800ms.
-                        <br>   moveStop(); //stop after 800ms.
-                        <br> }
-                        <br>  else
-                        <br>  {
-                          <br>   turnLeft();   //turn left function.
-                          <br>   delay(1500); //wheels will turn left for 800ms.
-                          <br>   moveStop(); //stop after 800ms.
-                          <br>  }
-                    
-                          <br>  }
-                          <br>  else
-                          <br> {
-                            <br>   moveForward();  //if distance is less then 40cm stop if not continue to move.
-                            <br>  }
-                  
-                            <br>  distance = readPing(); //distance function.
-                            <br>  }
-                  
-                            <br> int lookRight()     // Look Right Function for Servo Motor.
-                            <br>  {  
-                              <br>    servo_motor.write(15); //turn servo motor at 15 degrees right.
-                              <br>    delay(500);           //will turn servo at 15 degrees and wait for 500ms.
-                              <br>   int distance = readPing(); //after turning right read and store in read ping function.
-                              <br>   delay(100);               //wait 100ms for accurate measurements.
-                              <br>  servo_motor.write(90);  //return at initial state of servo which is 0 degrees.
-                              <br>  return distance;
-                              <br>  }
-                  
-                              <br>  int lookLeft()              // Look Left Function for Servo Motor .
-                              <br>  {
-                                <br>   servo_motor.write(180); //turn servo motor at 180 degrees right.
-                    <br>    delay(500);            //will turn servo at 180 degrees and wait for 500ms.
-                    <br>   int distance = readPing();    //after turning right left and store in read ping function.
-                    <br>   delay(100);                  //wait 100ms for accurate measurements.
-                    <br>   servo_motor.write(90);      //return at initial state of servo which is 90 degrees.
-                    <br>   return distance;
-                    <br>   }
-                  
-                    <br>  int readPing()      // Read Ping Function for Ultrasonic Sensor.
-                    <br>  {
-                      <br>     delay(100);                 // Wait 100ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-                      <br>    int cm = sonar.ping_cm();   //Send ping, get ping distance in centimeters (cm).
-                      <br>    if (cm==0)                  //if cm is equal to zero cm is 250 function.
-                      <br>    {
-                        <br>      cm=250;
-                        <br>    }
-                    <br>   return cm;
-                    <br>   }
-                  
-                    <br>  void moveStop()       // Move Stop Function for Motor Driver.
-                    <br>  {
-                      <br>    digitalWrite(RightMotorForward, LOW);
-                      <br>    digitalWrite(RightMotorBackward, LOW);
-                      <br>    digitalWrite(LeftMotorForward, LOW);
-                      <br>    digitalWrite(LeftMotorBackward, LOW);
-                      <br>  }
-                      <br>   
-                      <br>  void moveForward()    // Move Forward Function for Motor Driver.
-                      <br>   {
-                        <br>       digitalWrite(RightMotorForward, HIGH);
-                      <br>       digitalWrite(RightMotorBackward, LOW);
-                      <br>      digitalWrite(LeftMotorForward, HIGH);
-                      <br>       digitalWrite(LeftMotorBackward, LOW);
-                      <br>  }
-                  
-                      <br>  void moveBackward()   // Move Backward Function for Motor Driver.
-                      <br>  {
-                        <br>    digitalWrite(RightMotorForward, LOW);
-                        <br>    digitalWrite(RightMotorBackward, HIGH);
-                        <br>  digitalWrite(LeftMotorForward, LOW);
-                        <br>  digitalWrite(LeftMotorBackward, HIGH);
-                        <br>  }
-                  
-                        <br>  void turnRight()      // Turn Right Function for Motor Driver.
-                        <br>{
-                          <br>  digitalWrite(RightMotorForward, LOW);
-                          <br>   digitalWrite(RightMotorBackward, HIGH);
-                          <br>   digitalWrite(LeftMotorForward, HIGH);
-                          <br>    digitalWrite(LeftMotorBackward, LOW);
+                <br> int in1 = 7; // L298N PINS
+                <br> int in2 = 8;
+                <br> int in3 = 9;
+                <br> int in4 = 10;
+                <br> int enA = 2; // L298N SPEED CONTROL ENABLE
+                <br> int enB = 4;
+                
+                <br> #define TRIGGER_PIN 5
+                <br> #define ECHO_PIN 6
+                <br> #define MAX_DISTANCE 250 // Max Ping Distance
+                
+                <br> Servo servo_motor;
+                <br> NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+                
+                <br> boolean goesForward = false; // DO NOTHING AT START
+                <br> int distance = 100;
+                
+                <br> //CODE THAT WILL RUN ONCE
+                <br>  void setup()
+                <br> {
+                  <br> //L298N PIN AS OUTPUT
+                  <br> pinMode(in1, OUTPUT);
+                  <br> pinMode(in2, OUTPUT);
+                  <br> pinMode(in3, OUTPUT);
+                  <br> pinMode(in4, OUTPUT);
+                  <br> pinMode(enA, OUTPUT);
+                  <br> pinMode(enB, OUTPUT);
+                  <br> 
+                  <br> servo_motor.attach(3); //SERVO TO PIN 3
+                  <br> servo_motor.write(90); //MOVE SERVO 90 INITIAL POSITION
+                  <br> delay(2000);
+                  <br> distance = readPing();
+                  <br> delay(100);
+                  <br> distance = readPing();
+                  <br> delay(100);
+                  <br> distance = readPing();
+                  <br> delay(100);
+                  <br> distance = readPing();
+                  <br> delay(100);
+                  <br> Serial.begin(9600); //SERIAL BEGIN FOR BLUETOOTH
+                  <br> }
+                  <br> 
+                  <br> void loop()
+                  <br>  {
+                    <br>  if (Serial.available()) //IF BLUETOOTH AVILABLE 
+                    <br>  BLUETOOTH(); //GO TO BLUETOOTH FUNCTION
                     <br> }
-                    <br>
-                    <br>  void turnLeft()       // Turn Left Function for Motor Driver.
+                    <br> 
+                    <br> //SERVO LOOK RIGHT AND ULTRASONIC READ DISTANCE
+                    <br>  int lookRight()
+                    <br>  {
+                      <br>    servo_motor.write(15);
+                      <br>   delay(500);
+                      <br>   int distance = readPing();
+                      <br>   delay(100);
+                      <br>   servo_motor.write(90);
+                      <br>   return distance;
+                      <br> }
+                      <br> //SERVO LOOK LEFT AND ULTRASONIC READ DISTANCE
+                      <br>  int lookLeft()
+                      <br>  {
+                        <br>   servo_motor.write(180);
+                        <br>    delay(500);
+                        <br>   int distance = readPing();
+                        <br>   delay(100);
+                        <br>   servo_motor.write(90);
+                        <br>   return distance;
+                        <br> }
+                
+                        <br> //READ DISTANCE
+                        <br>  int readPing()
+                        <br>  {
+                          <br>    delay(100);
+                          <br>    int cm = sonar.ping_cm();
+                          <br>   if (cm == 0)
+                          <br>   {
+                            <br>     cm = 250;
+                            <br>   }
+                            <br>   return cm;
+                            <br> }
+                
+                            <br> void forward() //GO FORWRD FUNCTION
+                            <br>  {
+                              <br>   analogWrite(enA, 130);
+                              <br>   analogWrite(enB, 130);
+                              <br>  digitalWrite(in1, HIGH);
+                              <br>  digitalWrite(in2, LOW);
+                              <br>  digitalWrite(in3, HIGH);
+                              <br>  digitalWrite(in4, LOW);
+                              <br>  }
+                              <br> 
+                              <br>  void backward() //GO BACKWARD FUNCTION
+                              <br>  {
+                                <br>    analogWrite(enA, 130);
+                                <br>    analogWrite(enB, 130);
+                                <br>    digitalWrite(in1, LOW);
+                                <br>   digitalWrite(in2, HIGH);
+                                <br>   digitalWrite(in3, LOW);
+                                <br>   digitalWrite(in4, HIGH);
+                                <br>  }
+                
+                                <br>  void turn_left() //TURN LEFT FUNCTION
+                                <br>  {
+                                  <br>   analogWrite(enA, 130);
+                                  <br>   analogWrite(enB, 130);
+                                  <br>  digitalWrite(in1, HIGH);
+                                  <br>  digitalWrite(in2, LOW);
+                                  <br>   digitalWrite(in3, LOW);
+                                  <br>   digitalWrite(in4, HIGH);
+                                  <br>  }
+                                  <br> 
+                                  <br>  void turn_right() //TURN RIGHT FUNCTION
+                                  <br>  {  
+                                    <br>    analogWrite(enA, 130);
+                                    <br>   analogWrite(enB, 130);
+                                    <br>   digitalWrite(in1, LOW);
+                                    <br>   digitalWrite(in2, HIGH);
+                                    <br>  digitalWrite(in3, HIGH);
+                                    <br>   digitalWrite(in4, LOW);
+                                    <br>  }
+                
+                                    <br>  void st() //STOP FUNCTION
+                                    <br>  {
+                                      <br>  analogWrite(enA, 130);
+                                      <br>  analogWrite(enB, 130);
+                                      <br>  digitalWrite(in1, LOW);
+                                      <br>  digitalWrite(in2, LOW);
+                                      <br>   digitalWrite(in3, LOW);
+                                      <br>   digitalWrite(in4, LOW);
+                                      <br> }
+                
+                                      <br> void BLUETOOTH() //BLUETOOTH FUNCTION
+                                      <br> {
+                                        <br>  // YOUR DEFAULTS
+                
+                                        <br>  char data = Serial.read(); //VARIABLE VALUE IS SERIAL VALUE
+                                        <br>  Serial.println(data); //PRINT SERIAL VALUE
+                                        <br>  if (data == 'F') //IF SERIAL VALUE IS "F" CALL FORWARD FUNCTION
+                                        <br>  {
+                                          <br>    forward();
+                                          <br>    Serial.println("BLUETOOTH MODE"); //PRINT BLUETOOTH MODE IN SERIAL MONITOR
+                                          <br>   }
+                                          <br>   else if (data == 'B') //IF SERIAL VALUE IS "B" CALL BACKWARD FUNCTION
+                                          <br>  {
+                                            <br>     backward();
+                                            <br>     Serial.println("BLUETOOTH MODE");
+                                            <br>    }
+                                            <br>   else if (data == 'L') //IF SERIAL VALUE IS "L" CALL TURN LEFT FUNCTION
+                                            <br>  {
+                                              <br>     turn_left();
+                                              <br>     Serial.println("BLUETOOTH MODE");
+                                              <br>  }
+                                              <br>  else if (data == 'R') //IF SERIAL VALUE IS "R" CALL TURN RIGHT FUNCTION
+                                              <br>   {
+                                                <br>     turn_right();
+                                                <br>     Serial.println("BLUETOOTH MODE");
+                                                <br>   }
+                                                <br>   else if (data == 'S') //IF SERIAL VALUE IS "S" CALL STOP FUNCTION
+                                                <br>   {
+                                                  <br>     st();
+                                                  <br>     Serial.println("BLUETOOTH MODE");
+                                                  <br>    }
+                                                  <br>   else if (data == 'I') //IF SERIAL VALUE IS "I" CALL TURN AUTO FUNCTION
+                                                  <br>     AUTO();
+                                                  <br>  }
+                
+                                                  <br>   void AUTO() //AUTO FUNCTION
+                                                  <br>  {
+                                                    <br>    Serial.println("AUTO MODE"); //PRINT AUTO MODE IN SERIAL MONITOR
+                
+                                                    <br>  int distanceRight = 0;
+                                                    <br>  int distanceLeft = 0;
+                                                    <br>  delay(50);
+                
+                                                    <br>   if (distance <= 40) //IF DISTANCE IS LESS THEN OR EQUAL TO 40 CM
+                                                    <br>   {
+                                                      <br>     st(); //CALL STOP FUNCTION
+                                                      <br>     delay(300);
+                                                      <br>     backward();//CALL BACKWARD FUNCTION
+                                                      <br>     delay(400);
+                                                      <br>     st();//CALL STOP FUNCTION
+                                                      <br>     delay(300);
+                    <br>     distanceRight = lookRight(); //TURN SERVO TO RIGHT AND STORE DISTANCE
+                    <br>    delay(300);
+                    <br>    distanceLeft = lookLeft(); //TURN SERVO TO LEFT AND STORE DISTANCE
+                    <br>    delay(300);
+                    <br> 
+                    <br>   if (distanceRight >= distanceLeft) //COMPARE DISTANCE RIGHT AND LEFT
                     <br>   {
-                    <br>     digitalWrite(RightMotorForward, HIGH);
-                    <br>   digitalWrite(RightMotorBackward, LOW);
-                    <br>   digitalWrite(LeftMotorForward, LOW);
-                    <br>    digitalWrite(LeftMotorBackward, HIGH);
-                    <br>  }
+                      <br>     turn_right(); //IF RIGHT IS GREAT CALL RIGHT
+                      <br>      delay(800);
+                      <br>        st();
+                      <br>    }
+                      <br>    else
+                      <br>    {
+                        <br>    turn_left(); //ELSE CALL LEFT
+                        <br>    delay(800);
+                        <br>    st();
+                        <br>   }
+                        <br> 
+                        <br>   }
+                        <br>   else
+                        <br>   {
+                          <br>     forward(); //IF DISTANCE IS MORE THEN 40cm GO FORWARD
+                          <br>   }
+                          <br>   distance = readPing();
+                          <br>  }
+ 
               </span>
               <br>
               <br>
